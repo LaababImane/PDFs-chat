@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from sentence_transformers import SentenceTransformer
+from InstructorEmbedding import INSTRUCTOR
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings # type: ignore
 from langchain_community.vectorstores import FAISS # type: ignore
 from langchain_community.llms import OpenAI
@@ -33,10 +34,9 @@ def get_vectorstore(chunks):
     #     model_name= 'hkunlp/instructor-xl',
     #     model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
     # )
-    embeddings = SentenceTransformer("hkunlp/instructor-xl")
+    embeddings = INSTRUCTOR('hkunlp/instructor-large')
     print("Model loaded successfully!")
-    vectorstore = FAISS.from_texts(chunks, lambda docs: embeddings.encode(docs, convert_to_tensor=True))
-    # vectorstore = FAISS.from_texts(chunks, embeddings)
+    vectorstore = FAISS.from_texts(chunks, embeddings)
     return vectorstore
 
 
