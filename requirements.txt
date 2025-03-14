@@ -8,5 +8,5 @@ langchain-community
 faiss-cpu
 sentence-transformers
 huggingface-hub>=0.28.1
-InstructorEmbedding
+InstructorEmbedding==1.0.1
 GPT4All
