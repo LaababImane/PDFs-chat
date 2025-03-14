@@ -11,3 +11,5 @@ openai
 faiss-gpu
 altair
 tiktoken
+torch
+transformers
