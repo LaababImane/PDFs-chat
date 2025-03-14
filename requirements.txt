@@ -1,4 +1,5 @@
 streamlit
+txtai
 python-dotenv
 PyPDF2
 transformers
