@@ -1,6 +1,7 @@
 huggingface_hub
 sentence-transformers
 InstructorEmbedding
+langchain_community
 python-dotenv
 langchain
 PyPDF2
