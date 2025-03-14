@@ -27,7 +27,7 @@ def get_text_chunks(pdf_text):
 
 def get_vectorstore(chunks):
     # embeddings = OpenAIEmbeddings()
-    model_path = "./instructor-large"
+    model_path = "hkunlp/instructor-large"
     embeddings = HuggingFaceInstructEmbeddings(
         model_name= model_path,
         # model_name= 'hkunlp/instructor-xl',
@@ -40,7 +40,7 @@ def get_vectorstore(chunks):
 
 def get_conversation_chain(vectorstore):
     # llm = ChatOpenAI()
-    llm = GPT4All(model="./models/mistral-7b-instruct-v0.1.Q4_0.gguf", device='cpu')
+    llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
     return conversation_chain
