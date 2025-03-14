@@ -28,7 +28,6 @@ def get_text_chunks(pdf_text):
 def get_vectorstore(chunks):
     # embeddings = OpenAIEmbeddings()
     embeddings = HuggingFaceInstructEmbeddings(
-        model_name= model_path,
         model_name= 'hkunlp/instructor-xl',
         model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
     )
