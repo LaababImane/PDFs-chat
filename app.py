@@ -2,6 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
+from sentence_transformers import SentenceTransformer
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings # type: ignore
 from langchain_community.vectorstores import FAISS # type: ignore
 from langchain_community.llms import OpenAI
@@ -28,10 +29,11 @@ def get_text_chunks(pdf_text):
 
 def get_vectorstore(chunks):
     # embeddings = OpenAIEmbeddings()
-    embeddings = HuggingFaceInstructEmbeddings(
-        model_name= 'hkunlp/instructor-xl',
-        model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
-    )
+    # embeddings = HuggingFaceInstructEmbeddings(
+    #     model_name= 'hkunlp/instructor-xl',
+    #     model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
+    # )
+    embeddings = SentenceTransformer("hkunlp/instructor-xl")
     print("Model loaded successfully!")
     vectorstore = FAISS.from_texts(chunks, embeddings)
     return vectorstore
