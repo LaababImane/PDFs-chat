@@ -12,7 +12,7 @@ from langchain.chains import ConversationalRetrievalChain # type: ignore
 from htmlTemplate import css , bot_template , user_template
 import os
 
-os.system("pip install --upgrade faiss-cpu torch huggingface_hub==0.15.1 sentence-transformers==2.2.2 InstructorEmbedding")
+os.system("pip install --upgrade faiss-cpu torch huggingface_hub sentence-transformers==2.2.2 InstructorEmbedding")
 
 
 def get_pdf_text(pdf_docs):
