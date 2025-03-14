@@ -5,6 +5,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from InstructorEmbedding import INSTRUCTOR
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings # type: ignore
+from txtai.embeddings import Embeddings
 from langchain_community.vectorstores import FAISS # type: ignore
 from langchain_community.llms import OpenAI
 from transformers import pipeline
@@ -28,36 +29,54 @@ def get_text_chunks(pdf_text):
     chunks = text_splitter.split_text(pdf_text)
     return chunks
 
-def get_vectorstore(chunks):
-    # embeddings = OpenAIEmbeddings()
-    # embeddings = HuggingFaceInstructEmbeddings(
-    #     model_name= 'hkunlp/instructor-xl',
-    #     model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
-    # )
-    embeddings = INSTRUCTOR('hkunlp/instructor-large')
-    print("Model loaded successfully!")
-    vectorstore = FAISS.from_texts(chunks, embeddings)
-    return vectorstore
+# def get_vectorstore(chunks):
+#     # embeddings = OpenAIEmbeddings()
+#     # embeddings = HuggingFaceInstructEmbeddings(
+#     #     model_name= 'hkunlp/instructor-xl',
+#     #     model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
+#     # )
+#     embeddings = INSTRUCTOR('hkunlp/instructor-large')
+#     print("Model loaded successfully!")
+#     vectorstore = FAISS.from_texts(chunks, embeddings)
+#     return vectorstore
 
+def get_vectorstore(chunks):
+    embeddings = Embeddings()
+    embeddings.load("sentence-transformers/all-MiniLM-L6-v2")  # Use a smaller model for speed
+    for i, chunk in enumerate(chunks):
+        embeddings.add(i, chunk)
+    return embeddings
 
 def get_conversation_chain(vectorstore):
-    # llm = ChatOpenAI()
-    llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
-    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
-    return conversation_chain
+    def retrieve(query):
+        results = vectorstore.search(query, 3)  # Retrieve top 3 similar chunks
+        return "\n".join([r[1] for r in results])
 
+    return retrieve  # Just return the retrieval function
+
+
+# def get_conversation_chain(vectorstore):
+#     # llm = ChatOpenAI()
+#     llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
+#     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+#     conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
+#     return conversation_chain
+
+
+# def handle_user_question(user_question):
+#     response = st.session_state.conversation({'question' :user_question})
+#     st.session_state.chat_history = response['chat_history']
+
+#     for i , message in enumerate(st.session_state.chat_history):
+#         if i % 2 == 0:
+#             st.write(bot_template.replace("{{MSG}}", message.content) , unsafe_allow_html=True)
+#         else:
+#             st.write(user_template.replace("{{MSG}}", message) , unsafe_allow_html=True)
 
 def handle_user_question(user_question):
-    response = st.session_state.conversation({'question' :user_question})
-    st.session_state.chat_history = response['chat_history']
-
-    for i , message in enumerate(st.session_state.chat_history):
-        if i % 2 == 0:
-            st.write(bot_template.replace("{{MSG}}", message.content) , unsafe_allow_html=True)
-        else:
-            st.write(user_template.replace("{{MSG}}", message) , unsafe_allow_html=True)
-
+    if st.session_state.conversation:
+        response = st.session_state.conversation(user_question)
+        st.write(response)  # Simple retrieval response
 
 
 def main():
