@@ -35,7 +35,8 @@ def get_vectorstore(chunks):
     # )
     embeddings = SentenceTransformer("hkunlp/instructor-xl")
     print("Model loaded successfully!")
-    vectorstore = FAISS.from_texts(chunks, embeddings)
+    vectorstore = FAISS.from_texts(chunks, lambda docs: embeddings.encode(docs, convert_to_tensor=True))
+    # vectorstore = FAISS.from_texts(chunks, embeddings)
     return vectorstore
 
 
