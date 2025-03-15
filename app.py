@@ -43,7 +43,7 @@ def get_conversation_chain(vectorstore):
     # llm = ChatOpenAI()
     # llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
      # Load the Hugging Face model as a pipeline (e.g., text generation or other tasks)
-    hf_pipeline = pipeline("text-generation", model="openai-community/gpt2", max_new_tokens=100, device=0)  # You can specify device (0 for GPU or -1 for CPU)
+    hf_pipeline = pipeline("text-generation", model="openai-community/gpt2", max_new_tokens=100, pad_token_id=50256 , device=0)  # You can specify device (0 for GPU or -1 for CPU)
 
     # Wrap the Hugging Face pipeline in LangChain's HuggingFacePipeline
     llm = HuggingFacePipeline(pipeline=hf_pipeline)
@@ -53,7 +53,7 @@ def get_conversation_chain(vectorstore):
 
 
 def handle_user_question(user_question):
-    response = st.session_state.conversation({'question' :user_question})
+    response = st.session_state.conversation.invoke({'question': user_question})
     st.session_state.chat_history = response['chat_history']
 
     for i , message in enumerate(st.session_state.chat_history):
