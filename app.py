@@ -4,7 +4,7 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings # type: ignore
 from langchain_community.vectorstores import FAISS # type: ignore
-from langchain.llms import HuggingFacePipeline
+from langchain_community.llms import HuggingFacePipeline
 from transformers import pipeline
 from langchain_community.llms import OpenAI
 from langchain_community.llms import GPT4All  
