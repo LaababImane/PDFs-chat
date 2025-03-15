@@ -1,13 +1,12 @@
 streamlit
-txtai
 python-dotenv
 PyPDF2
 transformers
+huggingface_hub==0.15.1
 torch
 langchain
 langchain-community
 faiss-cpu
 sentence-transformers==2.2.2
-huggingface_hub==0.15.1
 InstructorEmbedding==1.0.1
 GPT4All
