@@ -1,3 +1,3 @@
 #!/bin/bash
-pip install huggingface_hub==0.15.1 --no-cache-dir
-python app.py
+pip uninstall -y huggingface_hub
+pip install huggingface_hub==0.23.0
