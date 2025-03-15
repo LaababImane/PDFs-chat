@@ -8,6 +8,7 @@ datasets
 python-dotenv
 PyPDF2
 langchain
+langchain-huggingface
 langchain-community
 faiss-cpu
 GPT4All
