@@ -1,3 +1,3 @@
 #!/bin/bash
 pip uninstall -y huggingface_hub
-pip install huggingface_hub==0.23.0
+pip install --upgrade huggingface_hub==0.24.0
