@@ -4,7 +4,7 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings # type: ignore
 from langchain_community.vectorstores import FAISS # type: ignore
-from langchain_community.llms import HuggingFaceHub
+from langchain_huggingface import HuggingFaceEndpoint
 from langchain_community.llms import OpenAI
 from langchain_community.llms import GPT4All  
 from langchain.memory import ConversationBufferMemory 
@@ -41,7 +41,7 @@ def get_vectorstore(chunks):
 def get_conversation_chain(vectorstore):
     # llm = ChatOpenAI()
     # llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
-    llm = HuggingFaceHub(
+    llm = HuggingFaceEndpoint(
     repo_id="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", 
     huggingfacehub_api_token=os.getenv("HUGGINGFACE_API_KEY")
 )
