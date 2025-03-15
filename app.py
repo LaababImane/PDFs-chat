@@ -29,54 +29,40 @@ def get_text_chunks(pdf_text):
     chunks = text_splitter.split_text(pdf_text)
     return chunks
 
-# def get_vectorstore(chunks):
-#     # embeddings = OpenAIEmbeddings()
-#     # embeddings = HuggingFaceInstructEmbeddings(
-#     #     model_name= 'hkunlp/instructor-xl',
-#     #     model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
-#     # )
-#     embeddings = INSTRUCTOR('hkunlp/instructor-large')
-#     print("Model loaded successfully!")
-#     vectorstore = FAISS.from_texts(chunks, embeddings)
-#     return vectorstore
-
 def get_vectorstore(chunks):
-    embeddings = Embeddings()
-    embeddings.load("sentence-transformers/all-MiniLM-L6-v2")  # Use a smaller model for speed
-    for i, chunk in enumerate(chunks):
-        embeddings.add(i, chunk)
-    return embeddings
+    # embeddings = OpenAIEmbeddings()
+    embeddings = HuggingFaceInstructEmbeddings(
+        model_name= 'hkunlp/instructor-xl',
+        model_kwargs={"device": "cpu"}  # Change to "cuda" if using GPU
+    )
+    # embeddings = INSTRUCTOR('hkunlp/instructor-large')
+    print("Model loaded successfully!")
+    vectorstore = FAISS.from_texts(chunks, embeddings)
+    return vectorstore
+
 
 def get_conversation_chain(vectorstore):
-    def retrieve(query):
-        results = vectorstore.search(query, 3)  # Retrieve top 3 similar chunks
-        return "\n".join([r[1] for r in results])
+    # llm = ChatOpenAI()
+    llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
+    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+    conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
+    return conversation_chain
 
-    return retrieve  # Just return the retrieval function
-
-
-# def get_conversation_chain(vectorstore):
-#     # llm = ChatOpenAI()
-#     llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
-#     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-#     conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
-#     return conversation_chain
-
-
-# def handle_user_question(user_question):
-#     response = st.session_state.conversation({'question' :user_question})
-#     st.session_state.chat_history = response['chat_history']
-
-#     for i , message in enumerate(st.session_state.chat_history):
-#         if i % 2 == 0:
-#             st.write(bot_template.replace("{{MSG}}", message.content) , unsafe_allow_html=True)
-#         else:
-#             st.write(user_template.replace("{{MSG}}", message) , unsafe_allow_html=True)
 
 def handle_user_question(user_question):
-    if st.session_state.conversation:
-        response = st.session_state.conversation(user_question)
-        st.write(response)  # Simple retrieval response
+    response = st.session_state.conversation({'question' :user_question})
+    st.session_state.chat_history = response['chat_history']
+
+    for i , message in enumerate(st.session_state.chat_history):
+        if i % 2 == 0:
+            st.write(bot_template.replace("{{MSG}}", message.content) , unsafe_allow_html=True)
+        else:
+            st.write(user_template.replace("{{MSG}}", message) , unsafe_allow_html=True)
+
+try:
+    from huggingface_hub import cached_download
+except ImportError as e:
+    print("Error importing cached_download:", e)
 
 
 def main():
