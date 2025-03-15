@@ -42,7 +42,7 @@ def get_conversation_chain(vectorstore):
     # llm = ChatOpenAI()
     # llm = GPT4All(model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", device='cpu')
     llm = HuggingFaceHub(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.1", 
+    repo_id="TheBloke/Mistral-7B-Instruct-v0.1-GGUF", 
     huggingfacehub_api_token=os.getenv("HUGGINGFACE_API_KEY")
 )
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
