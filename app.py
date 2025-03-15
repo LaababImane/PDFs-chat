@@ -60,7 +60,7 @@ def handle_user_question(user_question):
         if i % 2 == 0:
             st.write(bot_template.replace("{{MSG}}", message.content) , unsafe_allow_html=True)
         else:
-            st.write(user_template.replace("{{MSG}}", message) , unsafe_allow_html=True)
+            st.write(user_template.replace("{{MSG}}", message.content), unsafe_allow_html=True)
 
 try:
     from huggingface_hub import cached_download
