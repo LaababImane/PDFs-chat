@@ -4,8 +4,9 @@ emoji: 🌍
 colorFrom: pink
 colorTo: indigo
 sdk: streamlit
-sdk_version: 1.43.2
+sdk_version: 1.12.0  # Choose a compatible Streamlit version
 app_file: app.py
+python_version: "3.8.19"
 pinned: false
 ---
 
