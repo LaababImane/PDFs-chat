@@ -2,13 +2,9 @@ import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
-from sentence_transformers import SentenceTransformer
-from InstructorEmbedding import INSTRUCTOR
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings # type: ignore
-from txtai.embeddings import Embeddings
 from langchain_community.vectorstores import FAISS # type: ignore
 from langchain_community.llms import OpenAI
-from transformers import pipeline
 from langchain_community.llms import GPT4All  
 from langchain.memory import ConversationBufferMemory 
 from langchain.chains import ConversationalRetrievalChain # type: ignore
