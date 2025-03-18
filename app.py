@@ -62,14 +62,10 @@ def handle_user_question(user_question):
         else:
             st.write(user_template.replace("{{MSG}}", message.content), unsafe_allow_html=True)
 
-try:
-    from huggingface_hub import cached_download
-except ImportError as e:
-    print("Error importing cached_download:", e)
-
 
 def main():
     load_dotenv()
+    os.getenv('HUGGINGFACE_API_KEY')
     st.set_page_config(page_title="Chat with multiple PDFs", page_icon=":books:", layout="wide")
 
     st.write(css, unsafe_allow_html=True) 
@@ -81,28 +77,44 @@ def main():
         st.session_state.chat_history = None
         
     st.header("Chat with multiple PDFs :books:")
+
+    st.markdown("""
+    <style>
+    .stFileUploader {
+        width: 400px !important; /* Reduce the width of the file uploader itself */
+        margin: 0 auto;  /* Center the uploader horizontally */
+        display: block;  /* Ensure the file uploader behaves as a block element */
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+    st.subheader("PDFs Upload")
+    pdf_docs = st.file_uploader("Upload PDFs here", type="pdf", accept_multiple_files=True)
+
+    # Process PDFs when uploaded
+    if pdf_docs:
+        if st.button("Process PDFs"):
+            with st.spinner("Processing PDFs..."):
+                # Get PDF text
+                pdf_text = get_pdf_text(pdf_docs)
+
+                # Get text chunks
+                chunks = get_text_chunks(pdf_text)
+
+                # Create vector embeddings
+                vectorstore = get_vectorstore(chunks)
+
+                # Create conversation 
+                st.session_state.conversation = get_conversation_chain(vectorstore)
+
+                # Success message after processing
+                st.success("PDFs processed successfully!")
+
+
+    # Chat conversation section
     user_question = st.text_input("Ask a question about your PDFs :")
     if user_question:
         handle_user_question(user_question)
-
-    with st.sidebar:
-        st.subheader("PDFs")
-        pdf_docs = st.file_uploader("Upload PDFs here", type="pdf", accept_multiple_files=True)
-        if st.button("Process PDFs") :
-            with st.spinner("Processing PDFs..."):
-                # get pdf text
-                pdf_text = get_pdf_text(pdf_docs)
-                # st.write(pdf_text)
-
-                # get text chunks
-                chunks = get_text_chunks(pdf_text)
-                # st.write(chunks)
-                # create vector embeddings
-                vectorstore = get_vectorstore(chunks)
-
-                # create conversation 
-                st.session_state.conversation = get_conversation_chain(vectorstore)
-
 
 if __name__ == '__main__':
     main()
