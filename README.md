@@ -58,4 +58,17 @@ This project allows users to upload multiple PDF files and chat with their conte
 ----------------------
 ✨ Support for additional document formats (Word, TXT, etc.)  
 ✨ Improved memory handling for longer conversations  
-✨ Deployment on cloud platforms  
+✨ Deployment on cloud platforms
+
+📸 SCREENSHOTS  
+--------------
+Here are some screenshots of the application in action:
+
+1️⃣ **Uploading PDFs:**  
+   ![Upload PDFs](screens/upload_pdfs.png)  
+
+2️⃣ **Chat Interface:**  
+   ![Chat Interface](screens/chat_interface.png)  
+
+📌 To view the screenshots, open the `screens/` folder in this repository.
+
